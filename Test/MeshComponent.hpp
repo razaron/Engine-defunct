@@ -18,6 +18,9 @@ public:
 	unsigned* getElements(){ return elements; };
 	int getElementsSize(){ return elementsSize; };
 
+	GLuint getEBO(){ return ebo; };
+	void setEBO(GLuint ebo){ this->ebo = ebo; };
+
 	void setData(float *data){ this->data = data; };
 	void setElements(unsigned *elements){ this->elements = elements; };
 	void setDataSize(int data){ this->dataSize = data; };

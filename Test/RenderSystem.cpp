@@ -1,70 +1,5 @@
 #include "RenderSystem.hpp"
 
-float vertice[] = {
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-
-	-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-	-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-	-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-	-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-	-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
-
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 
-	0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 
-	0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-
-	-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 
-	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
-	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
-	-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-
-	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-};
-
-float vertices[] = {
-	0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
-	0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
-	0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f
-};
-
-unsigned elements[] = {
-	0, 1, 2, 0, 2, 3,
-	7, 0, 3, 3, 7, 6,
-	3, 5, 6, 3, 2, 5,
-	1, 4, 2, 2, 4, 5,
-	7, 4, 0, 4, 1, 0,
-	7, 5, 4, 7, 6, 5
-};
-
-GLuint vao;
 
 RenderSystem::RenderSystem(int width, int height)
 	:width(width), height(height), root(new SceneNode(glm::vec3(0.0f), glm::vec3(0.1f)))
@@ -81,27 +16,6 @@ RenderSystem::RenderSystem(int width, int height)
 
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width / height, 1.0f, 100.0f);
 	glUniformMatrix4fv(shaderMain->uniProjection, 1, GL_FALSE, glm::value_ptr(proj));
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	GLuint vbo;
-	glGenBuffers(1, &vbo); // Generate 1 buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertice), vertice, GL_STATIC_DRAW);
-
-	GLuint elementbuffer;
-	glGenBuffers(1, &elementbuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
-	GLint posAttrib = glGetAttribLocation(shaderMain->program, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-
-	GLint texAttrib = glGetAttribLocation(shaderMain->program, "colour");
-	glEnableVertexAttribArray(texAttrib);
-	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 }
 
 RenderSystem::~RenderSystem()
@@ -172,6 +86,9 @@ void RenderSystem::addVAO(MeshComponent *mesh, ShaderProgram *shader)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, mesh->getDataSize() * sizeof(GLfloat), (void*)mesh->getData(), GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getEBO());
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->getElementsSize()*sizeof(GLuint), mesh->getElements(), GL_STATIC_DRAW);
+
 	setAttribs(shader);
 
 	glBindVertexArray(0);
@@ -215,8 +132,8 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 
 				if (i == "meshcomponent")
 				{
-					temp->setMesh((MeshComponent*)c);
-					addVAO((MeshComponent*)c, shaderMain);
+					temp->setMesh((MeshComponent*)j);
+					addVAO((MeshComponent*)j, shaderMain);
 				}
 
 			}
@@ -264,11 +181,22 @@ void RenderSystem::renderScene()
 
 void RenderSystem::draw(SceneNode *n)
 {
+	VertexArray *va = getVAO(n->getMesh(), shaderMain);
+
+	if (va == nullptr)
+		return;
+
+	glBindVertexArray(va->vao);
+
 	glm::mat4 model = glm::scale(n->getWorldTransform(), n->getScale());
-	//model *= glm::rotate(n->getRotation(), glm::vec3(0.0f,0.0f,1.0f));
 
 	glUniformMatrix4fv(shaderMain->uniModel, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	//glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, n->getMesh()->getEBO());
+	glDrawElements(GL_TRIANGLES, n->getMesh()->getElementsSize(), GL_UNSIGNED_INT, (void*)0);
+
+	glBindVertexArray(0);
 }
 
 void RenderSystem::drawNode(SceneNode *n)

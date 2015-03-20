@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <cmath>
 
-float ertices[] = {
+float vertices[] = {
 	0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
 	0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
 	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
 	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
-	0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
 	0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
 	-0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f
+	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f
 };
 
-unsigned lements[] = {
+unsigned elements[] = {
 	0, 1, 2,	0, 2, 3,
 	7, 0, 3,	3, 7, 6,
 	3, 5, 6,	3, 2, 5,
@@ -33,16 +33,30 @@ int main()
 	
 	s.addSubSpace(&t);
 
-	RenderComponent body(glm::vec3(0.0f, 0.0f, -3.5f), glm::vec3(1.0, 0.5f, -1.5f));
-	
-	body.addComponent(new RenderComponent(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f)));
-	body.addComponent(new RenderComponent(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f)));
-	body.addComponent(new RenderComponent(glm::vec3(1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f)));
-	body.addComponent(new RenderComponent(glm::vec3(-1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f)));
-	body.addComponent(new RenderComponent(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.5f, 0.5f, 0.5f)));
+	RenderComponent body(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0, 2.0f, 2.0f));
+	MeshComponent mesh(vertices, 48, elements, 36);
+
+	RenderComponent larm(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
+	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
+	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f));
+	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f));
+	RenderComponent head(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+
+	body.addComponent((Component*)&mesh);
+	larm.addComponent((Component*)&mesh);
+	rarm.addComponent((Component*)&mesh);
+	lleg.addComponent((Component*)&mesh);
+	rleg.addComponent((Component*)&mesh);
+	head.addComponent((Component*)&mesh);
+
+	body.addComponent((Component*)&larm);
+	body.addComponent((Component*)&rarm);
+	body.addComponent((Component*)&lleg);
+	body.addComponent((Component*)&rleg);
+	body.addComponent((Component*)&head);
 
 	t.addObject((Component*)&body);
-	//body.setRotation(-5.0f);
+	body.setRotation(1.0f);
 
 	float time = glfwGetTime(), delta = 0;
 	while (!glfwWindowShouldClose(r.getWindow()))
@@ -51,7 +65,7 @@ int main()
 			glfwSetWindowShouldClose(r.getWindow(), 1);
 
 
-		//body.setPosition(glm::vec3(5*std::sin(time), 5*std::cos(time), 0.0f));
+		body.setPosition(glm::vec3(5*std::sin(time), 5*std::cos(time), 0.0f));
 		
 		s.update();
 		r.updateScene(time);
