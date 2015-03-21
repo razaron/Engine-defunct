@@ -34,6 +34,22 @@ void setMainAttribs(ShaderProgram *shader)
 	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 }
 
+void checkError()
+{
+	GLenum en = glGetError();
+	switch (en)
+	{
+		//case GL_NO_ERROR: std::cout << "GL_NO_ERROR" << std::endl; break;
+	case GL_INVALID_ENUM: std::cout << "GL_INVALID_ENUM" << std::endl; break;
+	case GL_INVALID_VALUE: std::cout << "GL_INVALID_VALUE" << std::endl; break;
+	case GL_INVALID_OPERATION: std::cout << "GL_INVALID_OPERATION" << std::endl; break;
+	case GL_INVALID_FRAMEBUFFER_OPERATION: std::cout << "GL_INVALID_FRAMEBUFFER_OPERATION" << std::endl; break;
+	case GL_OUT_OF_MEMORY: std::cout << "GL_OUT_OF_MEMORY" << std::endl; break;
+	case GL_STACK_UNDERFLOW: std::cout << "GL_STACK_UNDERFLOW" << std::endl; break;
+	case GL_STACK_OVERFLOW: std::cout << "GL_STACK_OVERFLOW" << std::endl; break;
+	}
+}
+
 void RenderSystem::setAttribs(ShaderProgram *shader)
 {
 	if (shader == shaderMain)
@@ -66,9 +82,13 @@ void RenderSystem::addVAO(MeshComponent *mesh, ShaderProgram *shader)
 	//If the mesh finds a suitable VAO, registers itself
 	for (auto i : vaos)
 	{
-		if (i->meshes.at(0)->getData() == mesh->getData())
+		if (i->meshes.at(0)->getData() == mesh->getData() && i->meshes.at(0)->getDataSize() == mesh->getDataSize())
 		{
 			i->meshes.push_back(mesh);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getEBO());
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->getElementsSize()*sizeof(GLuint), mesh->getElements(), GL_STATIC_DRAW);
+
 			return;
 		}
 	}
@@ -197,6 +217,8 @@ void RenderSystem::draw(SceneNode *n)
 	glDrawElements(GL_TRIANGLES, n->getMesh()->getElementsSize(), GL_UNSIGNED_INT, (void*)0);
 
 	glBindVertexArray(0);
+
+	checkError();
 }
 
 void RenderSystem::drawNode(SceneNode *n)
@@ -225,6 +247,8 @@ GLFWwindow* RenderSystem::openWindow()
 
 	glewExperimental = GL_TRUE;
 	glewInit();
+
+	checkError();
 
 	return window;
 }

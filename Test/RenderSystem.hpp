@@ -41,6 +41,7 @@ public:
 
 	GLFWwindow *getWindow(){ return window; };
 	SceneNode *getRoot(){ return root; };
+	Camera *getCamera(){ return camera; };
 	VertexArray* getVAO(MeshComponent *mesh, ShaderProgram *shader);
 
 	void setAttribs(ShaderProgram *shader);

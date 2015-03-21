@@ -33,8 +33,13 @@ int main()
 	
 	s.addSubSpace(&t);
 
+
+
 	RenderComponent body(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0, 2.0f, 2.0f));
+	RenderComponent floor(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(20.0, 20.0f, 20.0f));
+
 	MeshComponent mesh(vertices, 48, elements, 36);
+	MeshComponent mesh2(vertices, 48, elements, 6);
 
 	RenderComponent larm(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
 	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
@@ -49,6 +54,8 @@ int main()
 	rleg.addComponent((Component*)&mesh);
 	head.addComponent((Component*)&mesh);
 
+	floor.addComponent((Component*)&mesh2);
+
 	body.addComponent((Component*)&larm);
 	body.addComponent((Component*)&rarm);
 	body.addComponent((Component*)&lleg);
@@ -56,7 +63,8 @@ int main()
 	body.addComponent((Component*)&head);
 
 	t.addObject((Component*)&body);
-	body.setRotation(1.0f);
+	t.addObject((Component*)&floor);
+	//body.setRotation(1.0f);
 
 	float time = glfwGetTime(), delta = 0;
 	while (!glfwWindowShouldClose(r.getWindow()))
