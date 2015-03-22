@@ -2,10 +2,11 @@
 
 
 RenderSystem::RenderSystem(int width, int height)
-	:width(width), height(height), root(new SceneNode(glm::vec3(0.0f), glm::vec3(0.1f)))
+	:width(width), height(height), root(new SceneNode())
 {
 	addType("rendercomponent");
 	addType("meshcomponent");
+	addType("transformcomponent");
 
 	openWindow();
 	shaderMain = new ShaderProgram();
@@ -119,59 +120,57 @@ void RenderSystem::addVAO(MeshComponent *mesh, ShaderProgram *shader)
 void RenderSystem::update(std::vector<Component*> gameobjects)
 {
 	delete root;
-	root = new SceneNode(glm::vec3(0.0f), glm::vec3(0.1f));
+	root = new SceneNode();
 
-	for (auto i : myTypes)
+	for (auto i : gameobjects)
 	{
-		for (auto j : gameobjects)
-		{
-			if (j->getType() == i)
-				process(j);
-		}
+		process(i);
 	}
 }
 
 void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 {
-	for (auto i : myTypes)
+	for (auto j : c->getComponentList())
 	{
-		for (auto j : c->getComponentList())
-		{
-			SceneNode *temp = n;
-			
-			if (j->getType() == i)
+		SceneNode *temp = n;
+	
+		if (j->getType() == "rendercomponent")
 			{
-				if (i == "rendercomponent")
-				{
-					RenderComponent *r = (RenderComponent*)j;
-					temp = new SceneNode(r->getPosition(), r->getScale());
-					temp->setRotation(r->getRotation());
-					
-					n->addChild(temp);
-				}
-
-				if (i == "meshcomponent")
-				{
-					temp->setMesh((MeshComponent*)j);
-					addVAO((MeshComponent*)j, shaderMain);
-				}
-
+				RenderComponent *r = (RenderComponent*)j;
+				temp = new SceneNode();
+				temp->setRotation(r->getRotation());
+				
+				n->addChild(temp);
 			}
+
+		if (j->getType() == "transformcomponent")
+			{
+				TransformComponent *t = (TransformComponent*)j;
+				temp->setTransform(t->getTransform());
+				temp->setScale(t->getScale());
+			}
+
+		if (j->getType() == "meshcomponent")
+			{
+				temp->setMesh((MeshComponent*)j);
+				addVAO((MeshComponent*)j, shaderMain);
+			}
+
 			
-			processSubComponents(j, temp);
-		}
+			
+		processSubComponents(j, temp);
 	}
 }
 
-void RenderSystem::process(Component *component)
+void RenderSystem::process(Component *gameobject)
 {
 	SceneNode *temp = root;
 
-	if (component->getType() == "rendercomponent")
+	if (gameobject->getType() == "rendercomponent")
 	{
-		RenderComponent *r = (RenderComponent*)component;
+		RenderComponent *r = (RenderComponent*)gameobject;
 
-		temp = new SceneNode(r->getPosition(), r->getScale());
+		temp = new SceneNode();
 		temp->setRotation(r->getRotation());
 
 
@@ -179,7 +178,7 @@ void RenderSystem::process(Component *component)
 	}
 	
 
-	processSubComponents(component, temp);
+	processSubComponents(gameobject, temp);
 }
 
 void RenderSystem::updateScene(float delta)

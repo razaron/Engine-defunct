@@ -94,6 +94,7 @@
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Geom.frag" />
@@ -115,6 +116,7 @@
     <ClInclude Include="SceneNode.hpp" />
     <ClInclude Include="Space.hpp" />
     <ClInclude Include="System.hpp" />
+    <ClInclude Include="TransformComponent.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -59,7 +59,7 @@ std::vector<Component*> Component::getComponentList()
 unsigned Component::addComponent(Component *c)
 {
 	subComponents.push_back(c);
-	c->parentHandle = handle;
+	c->parentHandles.push_back(handle);
 
 	return c->getHandle();
 }

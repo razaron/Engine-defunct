@@ -33,47 +33,39 @@ int main()
 	
 	s.addSubSpace(&t);
 
+	MeshComponent mSquare(vertices, 48, elements, 6);
+	MeshComponent mCube(vertices, 48, elements, 36);
 
+	RenderComponent floor(glm::vec3(0.0f, -5.0f, -5.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	RenderComponent body(glm::vec3(0.0f, 0.0f, 1.8f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
 
-	RenderComponent body(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0, 2.0f, 2.0f));
-	RenderComponent floor(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(20.0, 20.0f, 20.0f));
+	floor.addComponent(&body);
 
-	MeshComponent mesh(vertices, 48, elements, 36);
-	MeshComponent mesh2(vertices, 48, elements, 6);
-
-	RenderComponent larm(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
-	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f));
-	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f));
-	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f));
-	RenderComponent head(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-
-	body.addComponent((Component*)&mesh);
-	larm.addComponent((Component*)&mesh);
-	rarm.addComponent((Component*)&mesh);
-	lleg.addComponent((Component*)&mesh);
-	rleg.addComponent((Component*)&mesh);
-	head.addComponent((Component*)&mesh);
-
-	floor.addComponent((Component*)&mesh2);
-
+	RenderComponent larm(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent head(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.5f, 0.5f, 0.5f), &mCube);
+	
 	body.addComponent((Component*)&larm);
 	body.addComponent((Component*)&rarm);
 	body.addComponent((Component*)&lleg);
 	body.addComponent((Component*)&rleg);
 	body.addComponent((Component*)&head);
-
-	t.addObject((Component*)&body);
+	
 	t.addObject((Component*)&floor);
-	//body.setRotation(1.0f);
-
+	head.setRotation(5.0f);
+	floor.setRotation(1.0f);
 	float time = glfwGetTime(), delta = 0;
+	((TransformComponent*)body.getSubComponent("transformcomponent"))->setDeepScale(glm::vec3(1.0f));
+	
 	while (!glfwWindowShouldClose(r.getWindow()))
 	{
 		if (glfwGetKey(r.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(r.getWindow(), 1);
 
 
-		body.setPosition(glm::vec3(5*std::sin(time), 5*std::cos(time), 0.0f));
+		((TransformComponent*)body.getSubComponent("transformcomponent"))->setPosition(glm::vec3(5 * std::sin(time), 5 * std::cos(time), 1.8f));
 		
 		s.update();
 		r.updateScene(time);

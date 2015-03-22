@@ -4,6 +4,7 @@
 #include "SceneNode.hpp"
 #include "Camera.hpp"
 #include "RenderComponent.hpp"
+#include "TransformComponent.hpp"
 
 #include <GL/glew.h>  
 #include <GLFW/glfw3.h>

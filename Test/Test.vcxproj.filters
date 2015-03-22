@@ -61,6 +61,9 @@
       <Filter>Renderer\Source</Filter>
     </ClCompile>
     <ClCompile Include="MeshComponent.cpp">
+      <Filter>Renderer\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,6 +119,9 @@
       <Filter>Renderer\Header</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponent.hpp">
+      <Filter>Renderer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

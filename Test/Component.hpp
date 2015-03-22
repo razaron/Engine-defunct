@@ -28,7 +28,7 @@ private:
 	unsigned handle;
 	std::string type, name;
 	
-	unsigned parentHandle;
+	std::vector<unsigned> parentHandles;
 	std::vector <Component*> subComponents;
 	
 	unsigned getNextId() { return ++sNextId; };
