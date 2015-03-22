@@ -138,7 +138,6 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 			{
 				RenderComponent *r = (RenderComponent*)j;
 				temp = new SceneNode();
-				temp->setRotation(r->getRotation());
 				
 				n->addChild(temp);
 			}
@@ -169,10 +168,7 @@ void RenderSystem::process(Component *gameobject)
 	if (gameobject->getType() == "rendercomponent")
 	{
 		RenderComponent *r = (RenderComponent*)gameobject;
-
 		temp = new SceneNode();
-		temp->setRotation(r->getRotation());
-
 
 		root->addChild(temp);
 	}

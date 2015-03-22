@@ -36,7 +36,7 @@ int main()
 	MeshComponent mSquare(vertices, 48, elements, 6);
 	MeshComponent mCube(vertices, 48, elements, 36);
 
-	RenderComponent floor(glm::vec3(0.0f, -5.0f, -5.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	RenderComponent floor(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
 	RenderComponent body(glm::vec3(0.0f, 0.0f, 1.8f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
 
 	floor.addComponent(&body);
@@ -54,21 +54,33 @@ int main()
 	body.addComponent((Component*)&head);
 	
 	t.addObject((Component*)&floor);
-	head.setRotation(5.0f);
-	floor.setRotation(1.0f);
-	float time = glfwGetTime(), delta = 0;
 	((TransformComponent*)body.getSubComponent("transformcomponent"))->setDeepScale(glm::vec3(1.0f));
 	
+	float time = glfwGetTime(), delta = 0;
+	float lastTime = time;
+	int nbFrames = 0;
+
 	while (!glfwWindowShouldClose(r.getWindow()))
 	{
 		if (glfwGetKey(r.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(r.getWindow(), 1);
 
+		nbFrames++;
+		if (time - lastTime >= 1.0){ // If last prinf() was more than 1 sec ago
+			// printf and reset timer
+			printf("%f ms/frame, %d FPS\n", 1000.0 / double(nbFrames), nbFrames);
+			nbFrames = 0;
+			lastTime += 1.0;
+		}
+
 
 		((TransformComponent*)body.getSubComponent("transformcomponent"))->setPosition(glm::vec3(5 * std::sin(time), 5 * std::cos(time), 1.8f));
-		
+		((TransformComponent*)floor.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta * -2)));
+		((TransformComponent*)body.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta)));
+		((TransformComponent*)head.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, delta, 0)));
+
 		s.update();
-		r.updateScene(time);
+		r.updateScene(delta);
 		r.renderScene();
 
 		glfwSwapBuffers(r.getWindow());

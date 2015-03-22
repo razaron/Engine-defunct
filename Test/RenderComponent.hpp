@@ -17,10 +17,6 @@ public:
 	RenderComponent(glm::vec3 position, glm::vec3 scale, MeshComponent *mesh);
 	~RenderComponent();
 
-	float getRotation(){ return rotation; };
-	void setRotation(float angle){ rotation = angle; };
-
 private:
-	float rotation;
 };
 

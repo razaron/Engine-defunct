@@ -33,9 +33,6 @@ unsigned SceneNode::draw()
 
 unsigned SceneNode::update(float delta)
 {
-	if (rotation != 0.0f)
-		transform *= glm::rotate(rotation*delta, glm::vec3(1.0f, 1.0f, 0.0f));
-
 	if (parent)
 		worldTransform = parent->worldTransform * transform;
 	else
