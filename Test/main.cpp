@@ -6,14 +6,21 @@
 #include <cmath>
 
 float vertices[] = {
-	0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
-	0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
-	0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f
+	0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.3f,
+	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.3f,
+	-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.3f,
+	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.3f,
+	0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.3f,
+	-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.3f,
+	-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.3f,
+	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.3f
+};
+
+float svertices[] = {
+	0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.3f,
+	0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.3f,
+	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.3f,
+	-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.3f
 };
 
 unsigned elements[] = {
@@ -33,20 +40,27 @@ int main()
 	
 	s.addSubSpace(&t);
 
-	MeshComponent mSquare(vertices, 48, elements, 6);
-	MeshComponent mCube(vertices, 48, elements, 36);
+	MeshComponent mSquare(svertices, 28, elements, 6);
+	MeshComponent mCube(vertices, 56, elements, 36);
 
 	RenderComponent floor(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
-	RenderComponent body(glm::vec3(0.0f, 0.0f, 1.8f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
+	floor.setAlpha(0.5f);
+	RenderComponent floor2(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	floor2.setAlpha(0.5f);
+	RenderComponent floor3(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	floor3.setAlpha(0.5f);
+	RenderComponent body(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
+	body.setAlpha(0.5f);
 
 	floor.addComponent(&body);
+	floor.addComponent(&floor2);
+	floor2.addComponent(&floor3);
 
-	RenderComponent larm(glm::vec3(0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 3.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent head(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.5f, 0.5f, 0.5f), &mCube);
-	
+	RenderComponent larm(glm::vec3(0.8f, 0.0f, -1.8f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, -1.8f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
+	RenderComponent head(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.5f, 0.5f, 0.5f), &mCube);
 	body.addComponent((Component*)&larm);
 	body.addComponent((Component*)&rarm);
 	body.addComponent((Component*)&lleg);
@@ -74,10 +88,10 @@ int main()
 		}
 
 
-		((TransformComponent*)body.getSubComponent("transformcomponent"))->setPosition(glm::vec3(5 * std::sin(time), 5 * std::cos(time), 1.8f));
+		//((TransformComponent*)body.getSubComponent("transformcomponent"))->setPosition(glm::vec3(5 * std::sin(time), 5 * std::cos(time), 1.8f));
 		((TransformComponent*)floor.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta * -2)));
-		((TransformComponent*)body.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta)));
-		((TransformComponent*)head.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, delta, 0)));
+		//((TransformComponent*)body.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta)));
+		//((TransformComponent*)head.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, delta, 0)));
 
 		s.update();
 		r.updateScene(delta);

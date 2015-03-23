@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 typedef struct shaderprogram ShaderProgram;
 typedef struct vertexarray VertexArray;
@@ -54,6 +55,9 @@ public:
 	void renderScene();
 	GLuint createShader(ShaderProgram *shader, char* vertexSource, char* geometrySource, char* fragmentSource);
 
+	void buildNodeLists(SceneNode* from);
+	void sortNodeLists();
+
 
 private:
 	void drawNode(SceneNode *n);
@@ -67,6 +71,7 @@ private:
 	std::vector<VertexArray*> vaos;
 
 	SceneNode *root;
+	std::vector<SceneNode*> opaqueNodes, transparentNodes;
 	Camera *camera;
 };
 

@@ -28,11 +28,11 @@ void setMainAttribs(ShaderProgram *shader)
 {
 	GLint posAttrib = glGetAttribLocation(shader->program, "position");
 	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
 
-	GLint texAttrib = glGetAttribLocation(shader->program, "colour");
-	glEnableVertexAttribArray(texAttrib);
-	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+	GLint colAttrib = glGetAttribLocation(shader->program, "colour");
+	glEnableVertexAttribArray(colAttrib);
+	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 }
 
 void checkError()
@@ -138,7 +138,9 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 			{
 				RenderComponent *r = (RenderComponent*)j;
 				temp = new SceneNode();
-				
+				temp->setAlpha(r->getAlpha());
+				temp->setOvColour(r->getOvColour());
+
 				n->addChild(temp);
 			}
 
@@ -169,6 +171,8 @@ void RenderSystem::process(Component *gameobject)
 	{
 		RenderComponent *r = (RenderComponent*)gameobject;
 		temp = new SceneNode();
+		temp->setAlpha(r->getAlpha());
+		temp->setOvColour(r->getOvColour());
 
 		root->addChild(temp);
 	}
@@ -182,6 +186,31 @@ void RenderSystem::updateScene(float delta)
 	root->update(delta);
 }
 
+static bool CompareByCameraDistance(SceneNode *a, SceneNode *b) 
+{
+	return (a->getCameraDistance() < b->getCameraDistance()) ? true : false;
+}
+
+void RenderSystem::buildNodeLists(SceneNode* from) 
+{
+	if (from->getAlpha() < 1.0f)
+		transparentNodes.push_back(from);
+	else
+		opaqueNodes.push_back(from);
+
+	glm::vec3 dir = glm::vec3(from->getWorldTransform()[3]) - camera->getPosition();
+	from->setCameraDistance(glm::dot(dir,dir));
+
+	for (auto i : from->getChildren())
+		buildNodeLists(i);
+}
+
+void RenderSystem::sortNodeLists()
+{
+	std::sort(transparentNodes.begin(), transparentNodes.end(), CompareByCameraDistance);
+	std::sort(opaqueNodes.begin(), opaqueNodes.end(), CompareByCameraDistance);
+}
+
 void RenderSystem::renderScene()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -190,8 +219,20 @@ void RenderSystem::renderScene()
 	glUniformMatrix4fv(shaderMain->uniView, 1, GL_FALSE, glm::value_ptr(camera->getView()));
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	drawNode(root);
+	
+	transparentNodes.clear();
+	opaqueNodes.clear();
+	buildNodeLists(root);
+	sortNodeLists();
+
+	for	(std::vector <SceneNode*>::const_iterator i = opaqueNodes.begin();i != opaqueNodes.end(); ++i)
+		draw((*i));
+
+	for (std::vector <SceneNode*>::const_reverse_iterator i = transparentNodes.rbegin(); i != transparentNodes.rend(); ++i)
+		draw((*i));
 }
 
 void RenderSystem::draw(SceneNode *n)
@@ -203,13 +244,15 @@ void RenderSystem::draw(SceneNode *n)
 
 	glBindVertexArray(va->vao);
 
-	glm::mat4 model = glm::scale(n->getWorldTransform(), n->getScale());
+		glm::mat4 model = glm::scale(n->getWorldTransform(), n->getScale());
 
-	glUniformMatrix4fv(shaderMain->uniModel, 1, GL_FALSE, glm::value_ptr(model));
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
+		glUniformMatrix4fv(shaderMain->uniModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(shaderMain->uniOvColour, 1, glm::value_ptr(n->getOvColour()));
+		glUniform1f(glGetUniformLocation(shaderMain->program, "alpha"), n->getAlpha());
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, n->getMesh()->getEBO());
-	glDrawElements(GL_TRIANGLES, n->getMesh()->getElementsSize(), GL_UNSIGNED_INT, (void*)0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, n->getMesh()->getEBO());
+			glDrawElements(GL_TRIANGLES, n->getMesh()->getElementsSize(), GL_UNSIGNED_INT, (void*)0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 

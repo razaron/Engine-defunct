@@ -30,28 +30,37 @@ public:
 	glm::mat4 getWorldTransform(){ return worldTransform; };
 	glm::mat4 getTransform(){ return transform; };
 	glm::vec3 getScale(){ return scale; };
-	float getRotation(){ return rotation; };
 	std::vector<SceneNode*> getChildren(){ return children; };
 
 	void setMesh(MeshComponent* mesh){ this->mesh = mesh; };
 	void setWorldTransform(glm::mat4 t){ worldTransform = t; };
 	void setTransform(glm::mat4 t){ transform = t; };
 	void setScale(glm::vec3 s){ scale = s; };
-	void setRotation(float angle){ rotation = angle; };
 
 
 	void addChild(SceneNode *s);
 	virtual unsigned draw();
 	virtual unsigned update(float delta);
 
+	glm::vec3 getOvColour(){ return ovColour; };
+	void setOvColour(glm::vec3 ovColor){ this->ovColour = ovColor; };
+	float getAlpha(){ return alpha; };
+	void setAlpha(float alpha){ this->alpha = alpha; };
+	float getCameraDistance(){ return cameraDistance; };
+	void setCameraDistance(float cameraDistance){ this->cameraDistance = cameraDistance; };
+
 private:
+	
 	SceneNode *parent;
 
 	MeshComponent *mesh;
 	glm::mat4 worldTransform;
 	glm::mat4 transform;
 	glm::vec3 scale;
-	float rotation;
+	
+	glm::vec3 ovColour;
+	float alpha;
+	float cameraDistance;
 
 	std::vector <SceneNode*> children;
 };
