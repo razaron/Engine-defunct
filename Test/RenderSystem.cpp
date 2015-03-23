@@ -181,6 +181,22 @@ void RenderSystem::process(Component *gameobject)
 void RenderSystem::updateScene(float delta)
 {
 	root->update(delta);
+
+	//View matrix
+	glUniformMatrix4fv(shaderMain->uniView, 1, GL_FALSE, glm::value_ptr(camera->getView()));
+
+	//Projection matrix
+	glm::mat4 proj = glm::perspective(glm::radians(camera->getZoom()), (float)width / height, 1.0f, 100.0f);
+	glUniformMatrix4fv(shaderMain->uniProjection, 1, GL_FALSE, glm::value_ptr(proj));
+
+	//Setup view frustum
+	frustum.fromMatrix(proj*camera->getView());
+
+	//Build and sort opaque and transparent SceneNode lists
+	transparentNodes.clear();
+	opaqueNodes.clear();
+	buildNodeLists(root);
+	sortNodeLists();
 }
 
 static bool CompareByCameraDistance(SceneNode *a, SceneNode *b) 
@@ -190,13 +206,16 @@ static bool CompareByCameraDistance(SceneNode *a, SceneNode *b)
 
 void RenderSystem::buildNodeLists(SceneNode* from) 
 {
-	if (from->getAlpha() < 1.0f)
-		transparentNodes.push_back(from);
-	else
-		opaqueNodes.push_back(from);
+	if (frustum.insideFrustum(from))
+	{
+		if (from->getAlpha() < 1.0f)
+			transparentNodes.push_back(from);
+		else
+			opaqueNodes.push_back(from);
 
-	glm::vec3 dir = glm::vec3(from->getWorldTransform()[3]) - camera->getPosition();
-	from->setCameraDistance(glm::dot(dir,dir));
+		glm::vec3 dir = glm::vec3(from->getWorldTransform()[3]) - camera->getPosition();
+		from->setCameraDistance(glm::dot(dir,dir));
+	}
 
 	for (auto i : from->getChildren())
 		buildNodeLists(i);
@@ -210,21 +229,9 @@ void RenderSystem::sortNodeLists()
 
 void RenderSystem::renderScene()
 {
-	//Build and sort opaque and transparent SceneNode lists
-	transparentNodes.clear();
-	opaqueNodes.clear();
-	buildNodeLists(root);
-	sortNodeLists();
-	
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	//Render scene
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//View matrix
-	glUniformMatrix4fv(shaderMain->uniView, 1, GL_FALSE, glm::value_ptr(camera->getView()));
-
-	//Projection matrix
-	glm::mat4 proj = glm::perspective(glm::radians(camera->getZoom()), (float)width / height, 1.0f, 100.0f);
-	glUniformMatrix4fv(shaderMain->uniProjection, 1, GL_FALSE, glm::value_ptr(proj));
 
 	glEnable(GL_DEPTH_TEST);
 		//Draw opaque SceneNodes front to back
@@ -232,7 +239,7 @@ void RenderSystem::renderScene()
 			draw((*i));
 
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			//Draw transparent SceneNodes back to front
 			for (std::vector <SceneNode*>::const_reverse_iterator i = transparentNodes.rbegin(); i != transparentNodes.rend(); ++i)
 				draw((*i));

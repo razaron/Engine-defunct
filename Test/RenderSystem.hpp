@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "RenderComponent.hpp"
 #include "TransformComponent.hpp"
+#include "Frustum.hpp"
 
 #include <GL/glew.h>  
 #include <GLFW/glfw3.h>
@@ -73,5 +74,6 @@ private:
 	SceneNode *root;
 	std::vector<SceneNode*> opaqueNodes, transparentNodes;
 	Camera *camera;
+	Frustum frustum;
 };
 

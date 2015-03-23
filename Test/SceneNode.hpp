@@ -48,6 +48,8 @@ public:
 	void setAlpha(float alpha){ this->alpha = alpha; };
 	float getCameraDistance(){ return cameraDistance; };
 	void setCameraDistance(float cameraDistance){ this->cameraDistance = cameraDistance; };
+	float getBoundingRadius(){ return boundingRadius; };
+	void setBoundingRadius(float boundingRadius){ this->boundingRadius = boundingRadius; };
 
 private:
 	
@@ -60,7 +62,7 @@ private:
 	
 	glm::vec3 ovColour;
 	float alpha;
-	float cameraDistance;
+	float cameraDistance, boundingRadius;
 
 	std::vector <SceneNode*> children;
 };

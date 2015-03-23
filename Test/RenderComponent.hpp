@@ -21,9 +21,11 @@ public:
 	void setOvColour(glm::vec3 ovColor){ this->ovColour = ovColor; };
 	float getAlpha(){ return alpha; };
 	void setAlpha(float alpha){ this->alpha = alpha; };
+	float getBoundingRadius(){ return boundingRadius; };
+	void setBoundingRadius(float boundingRadius){ this->boundingRadius = boundingRadius; };
 
 private:
 	glm::vec3 ovColour;
-	float alpha;
+	float alpha, boundingRadius;
 };
 

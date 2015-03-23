@@ -45,9 +45,9 @@ int main()
 
 	RenderComponent floor(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
 	floor.setAlpha(0.5f);
-	RenderComponent floor2(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	RenderComponent floor2(glm::vec3(0.0f, 0.0f, -0.5f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
 	floor2.setAlpha(0.5f);
-	RenderComponent floor3(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
+	RenderComponent floor3(glm::vec3(0.0f, 0.0f, -0.5f), glm::vec3(10.0f, 10.0f, 0.0f), &mSquare);
 	floor3.setAlpha(0.5f);
 	RenderComponent body(glm::vec3(0.0f, 0.0f, 2.7f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
 	body.setAlpha(0.5f);
@@ -70,10 +70,11 @@ int main()
 	t.addObject((Component*)&floor);
 	((TransformComponent*)body.getSubComponent("transformcomponent"))->setDeepScale(glm::vec3(1.0f));
 	
+	r.getCamera()->setTarget(glm::vec3(0.0f, 11.0f, 2.0f));
+	r.getCamera()->setPosition(glm::vec3(0.0f, 10.0f, 2.0f));
 	float time = glfwGetTime(), delta = 0;
 	float lastTime = time;
 	int nbFrames = 0;
-
 	while (!glfwWindowShouldClose(r.getWindow()))
 	{
 		if (glfwGetKey(r.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -87,9 +88,9 @@ int main()
 			lastTime += 1.0;
 		}
 
-		r.getCamera()->setZoom(25.0f+std::abs(65.0f*std::sin(time)));
-
-		r.getCamera()->setPosition(glm::vec3(10 * std::sin(time), 10 * std::cos(time), 5.0f));
+		//r.getCamera()->setZoom(45.0f+std::abs(45.0f*std::sin(time)));
+		r.getCamera()->setPosition(glm::vec3(0.0f, 10.0f* std::sin(time), 2.0f));
+		//r.getCamera()->setPosition(glm::vec3(10 * std::sin(time), 10 * std::cos(time), 5.0f* std::sin(time)));
 		//((TransformComponent*)floor.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta * -2)));
 		//((TransformComponent*)body.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, 0, delta)));
 		//((TransformComponent*)head.getSubComponent("transformcomponent"))->rotate(glm::quat(glm::vec3(0, delta, 0)));
@@ -104,7 +105,6 @@ int main()
 		delta = time - glfwGetTime();
 		time = glfwGetTime();
 	}
-
 	return 0;
 }
 

@@ -1,13 +1,13 @@
 #include "SceneNode.hpp"
 
 SceneNode::SceneNode()
-	:parent(NULL), scale(glm::vec3(1.0f)), ovColour(glm::vec3(1.0f)), alpha(1.0f)
+	:parent(NULL), scale(glm::vec3(1.0f)), ovColour(glm::vec3(1.0f)), alpha(1.0f), boundingRadius(0.0f)
 {
 	
 }
 
 SceneNode::SceneNode(glm::vec3 position, glm::vec3 scale)
-	: parent(NULL), scale(scale), ovColour(glm::vec3(1.0f)), alpha(1.0f)
+	: parent(NULL), scale(scale), ovColour(glm::vec3(1.0f)), alpha(1.0f), boundingRadius(0.0f)
 {
 
 	transform *= glm::translate(position);

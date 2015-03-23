@@ -66,6 +66,12 @@
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Renderer\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Poly.vert">
@@ -123,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="TransformComponent.hpp">
       <Filter>Renderer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
