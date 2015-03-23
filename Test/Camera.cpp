@@ -2,16 +2,11 @@
 
 
 Camera::Camera(glm::vec3 position, glm::vec3 target)
-	:position(position), target(target)
+	:position(position), target(target), zoom(45.0f)
 {
 }
 
 
 Camera::~Camera()
 {
-}
-
-void Camera::translate(glm::vec3 vector)
-{
-	position + vector;
 }

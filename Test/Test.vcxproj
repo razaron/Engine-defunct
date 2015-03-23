@@ -61,6 +61,7 @@
       <AdditionalLibraryDirectories>C:\Libraries\Simple OpenGL Image Library\lib;C:\Libraries\glew\lib\Release\Win32;C:\Libraries\glfw\lib-vc2013;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

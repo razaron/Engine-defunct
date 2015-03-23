@@ -14,9 +14,6 @@ RenderSystem::RenderSystem(int width, int height)
 	glUseProgram(shaderMain->program);
 
 	camera = new Camera(glm::vec3(0.0f, 10.0f, 10.0f), glm::vec3(0.0f));
-
-	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width / height, 1.0f, 100.0f);
-	glUniformMatrix4fv(shaderMain->uniProjection, 1, GL_FALSE, glm::value_ptr(proj));
 }
 
 RenderSystem::~RenderSystem()
@@ -213,26 +210,34 @@ void RenderSystem::sortNodeLists()
 
 void RenderSystem::renderScene()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glUniformMatrix4fv(shaderMain->uniView, 1, GL_FALSE, glm::value_ptr(camera->getView()));
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	
+	//Build and sort opaque and transparent SceneNode lists
 	transparentNodes.clear();
 	opaqueNodes.clear();
 	buildNodeLists(root);
 	sortNodeLists();
+	
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for	(std::vector <SceneNode*>::const_iterator i = opaqueNodes.begin();i != opaqueNodes.end(); ++i)
-		draw((*i));
+	//View matrix
+	glUniformMatrix4fv(shaderMain->uniView, 1, GL_FALSE, glm::value_ptr(camera->getView()));
 
-	for (std::vector <SceneNode*>::const_reverse_iterator i = transparentNodes.rbegin(); i != transparentNodes.rend(); ++i)
-		draw((*i));
+	//Projection matrix
+	glm::mat4 proj = glm::perspective(glm::radians(camera->getZoom()), (float)width / height, 1.0f, 100.0f);
+	glUniformMatrix4fv(shaderMain->uniProjection, 1, GL_FALSE, glm::value_ptr(proj));
+
+	glEnable(GL_DEPTH_TEST);
+		//Draw opaque SceneNodes front to back
+		for	(std::vector <SceneNode*>::const_iterator i = opaqueNodes.begin();i != opaqueNodes.end(); ++i)
+			draw((*i));
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			//Draw transparent SceneNodes back to front
+			for (std::vector <SceneNode*>::const_reverse_iterator i = transparentNodes.rbegin(); i != transparentNodes.rend(); ++i)
+				draw((*i));
+		glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 }
 
 void RenderSystem::draw(SceneNode *n)
