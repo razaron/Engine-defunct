@@ -2,6 +2,8 @@
 
 #include "System.hpp"
 
+#include <algorithm>
+
 class Space
 {
 public:
@@ -10,6 +12,8 @@ public:
 	void update();
 	unsigned addObject(Component *gameobject);
 	unsigned addSubSpace(Space *space);
+
+	void removeObject(Component *gameobject){ gameobjects.erase(std::remove(gameobjects.begin(), gameobjects.end(), gameobject), gameobjects.end()); };
 
 private:
 	System *mySystem;

@@ -58,6 +58,9 @@ std::vector<Component*> Component::getComponentList()
 
 unsigned Component::addComponent(Component *c)
 {
+	if (std::find(subComponents.begin(), subComponents.end(), c) != subComponents.end())
+		return c->getHandle();
+
 	subComponents.push_back(c);
 	c->parentHandles.push_back(handle);
 

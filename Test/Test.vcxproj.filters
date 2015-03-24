@@ -34,6 +34,15 @@
     <Filter Include="Renderer\Header">
       <UniqueIdentifier>{aa16b47e-6ed8-4969-ab79-03e45ef10c50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{7975849f-b8fc-4307-9d0a-2525f2738a1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Source">
+      <UniqueIdentifier>{cc83cd84-1985-4290-994a-b537612feebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Header">
+      <UniqueIdentifier>{cb816765-8590-4740-8877-acbeda8c0b13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,14 +72,23 @@
     <ClCompile Include="MeshComponent.cpp">
       <Filter>Renderer\Source</Filter>
     </ClCompile>
-    <ClCompile Include="TransformComponent.cpp">
+    <ClCompile Include="Frustum.cpp">
       <Filter>Renderer\Source</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Physics\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Physics\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,14 +145,23 @@
     <ClInclude Include="MeshComponent.hpp">
       <Filter>Renderer\Header</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.hpp">
+    <ClInclude Include="Frustum.hpp">
       <Filter>Renderer\Header</Filter>
     </ClInclude>
     <ClInclude Include="Plane.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Physics\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Frustum.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TransformComponent.hpp">
+      <Filter>Physics\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.hpp">
+      <Filter>Physics\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.hpp">
+      <Filter>Physics\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.hpp">
+      <Filter>Physics\Header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

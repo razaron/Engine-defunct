@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 static unsigned sNextId = 0;
 
@@ -23,6 +24,8 @@ public:
 	Component* getSubComponent(std::string type); //returns Component from type
 	std::vector<Component*> getSubComponents(std::string type);
 	unsigned addComponent(Component *c); // Adds component to GameObject and returns Component handle
+
+	void removeSubComponents(Component *subComponent){ subComponents.erase(std::remove(subComponents.begin(), subComponents.end(), subComponent), subComponents.end()); };
 
 private:
 	unsigned handle;
