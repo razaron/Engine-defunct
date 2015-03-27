@@ -40,7 +40,7 @@ public:
 
 	void addChild(SceneNode *s);
 	virtual unsigned draw();
-	virtual unsigned update(float delta);
+	virtual unsigned update(double delta);
 
 	glm::vec3 getOvColour(){ return ovColour; };
 	void setOvColour(glm::vec3 ovColor){ this->ovColour = ovColor; };

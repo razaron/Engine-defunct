@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "RenderComponent.hpp"
 #include "TransformComponent.hpp"
+#include "ColliderComponent.hpp"
 #include "Frustum.hpp"
 
 #include <GL/glew.h>  
@@ -38,10 +39,11 @@ public:
 	RenderSystem(int width, int height);
 	~RenderSystem();
 
-	virtual void update(std::vector<Component*> gameobjects) override;
+	virtual void update(std::vector<Component*> gameobjects, double delta) override;
 	virtual void process(Component *component) override;
 	void processSubComponents(Component *c, SceneNode *n);
 
+	void setClearColour(glm::vec3 colour){ clearColour = colour; };
 	GLFWwindow *getWindow(){ return window; };
 	SceneNode *getRoot(){ return root; };
 	Camera *getCamera(){ return camera; };
@@ -52,7 +54,7 @@ public:
 
 	GLFWwindow* openWindow();
 	void closeWindow();
-	void updateScene(float delta);
+	void updateScene(double delta);
 	void renderScene();
 	GLuint createShader(ShaderProgram *shader, char* vertexSource, char* geometrySource, char* fragmentSource);
 
@@ -68,6 +70,7 @@ private:
 
 	int width, height;
 	GLFWwindow *window;
+	glm::vec3 clearColour;
 	ShaderProgram *shaderPre, *shaderMain, *shaderPost;
 	std::vector<VertexArray*> vaos;
 

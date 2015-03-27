@@ -12,7 +12,7 @@ System::~System()
 {
 }
 
-void System::update(std::vector<Component*> gameobjects)
+void System::update(std::vector<Component*> gameobjects, double delta)
 {
 	for (auto i : myTypes)
 	{

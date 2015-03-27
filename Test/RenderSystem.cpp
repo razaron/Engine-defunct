@@ -2,11 +2,12 @@
 
 
 RenderSystem::RenderSystem(int width, int height)
-	:width(width), height(height), root(new SceneNode())
+	:width(width), height(height), clearColour(glm::vec3(0.0f)), root(new SceneNode())
 {
 	addType("rendercomponent");
 	addType("meshcomponent");
 	addType("transformcomponent");
+	addType("collidercomponent");
 
 	openWindow();
 	shaderMain = new ShaderProgram();
@@ -114,7 +115,7 @@ void RenderSystem::addVAO(MeshComponent *mesh, ShaderProgram *shader)
 	vaos.push_back(vao);
 }
 
-void RenderSystem::update(std::vector<Component*> gameobjects)
+void RenderSystem::update(std::vector<Component*> gameobjects, double delta)
 {
 	delete root;
 	root = new SceneNode();
@@ -132,30 +133,34 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 		SceneNode *temp = n;
 	
 		if (j->getType() == "rendercomponent")
-			{
-				RenderComponent *r = (RenderComponent*)j;
-				temp = new SceneNode();
-				temp->setAlpha(r->getAlpha());
-				temp->setOvColour(r->getOvColour());
+		{
+			RenderComponent *r = (RenderComponent*)j;
+			temp = new SceneNode();
+			temp->setAlpha(r->getAlpha());
+			temp->setOvColour(r->getOvColour());
 
-				n->addChild(temp);
-			}
+			n->addChild(temp);
+		}
 
 		if (j->getType() == "transformcomponent")
-			{
-				TransformComponent *t = (TransformComponent*)j;
-				temp->setTransform(t->getTransform());
-				temp->setScale(t->getScale());
-			}
+		{
+			TransformComponent *t = (TransformComponent*)j;
+			temp->setTransform(t->getTransform());
+			temp->setScale(t->getScale());
+		}
 
 		if (j->getType() == "meshcomponent")
-			{
-				temp->setMesh((MeshComponent*)j);
-				addVAO((MeshComponent*)j, shaderMain);
-			}
+		{
+			temp->setMesh((MeshComponent*)j);
+			addVAO((MeshComponent*)j, shaderMain);
+		}
 
-			
-			
+		if (j->getType() == "collidercomponent")
+		{
+			ColliderComponent *c = (ColliderComponent*)j;
+			temp->setBoundingRadius(c->getBoundingRadius());
+		}
+		
 		processSubComponents(j, temp);
 	}
 }
@@ -178,7 +183,7 @@ void RenderSystem::process(Component *gameobject)
 	processSubComponents(gameobject, temp);
 }
 
-void RenderSystem::updateScene(float delta)
+void RenderSystem::updateScene(double delta)
 {
 	root->update(delta);
 
@@ -230,7 +235,7 @@ void RenderSystem::sortNodeLists()
 void RenderSystem::renderScene()
 {
 	//Render scene
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(clearColour.r, clearColour.g, clearColour.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);

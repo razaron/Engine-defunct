@@ -9,7 +9,7 @@ class Space
 public:
 	Space(System *s);
 	~Space();
-	void update();
+	void update(double delta);
 	unsigned addObject(Component *gameobject);
 	unsigned addSubSpace(Space *space);
 

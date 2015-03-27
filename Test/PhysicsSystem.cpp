@@ -2,6 +2,7 @@
 
 
 PhysicsSystem::PhysicsSystem()
+	:elapsed(0.0f)
 {
 }
 
@@ -10,33 +11,68 @@ PhysicsSystem::~PhysicsSystem()
 {
 }
 
-void PhysicsSystem::update(std::vector<Component*> gameobjects)
+glm::vec3 truncate(glm::vec3 vector, float max)
 {
-	for (auto i : gameobjects)
+	float length = glm::length(vector);
+	
+	if (length > max)
 	{
-		ColliderComponent *a = (ColliderComponent *)i->getSubComponent("collidercomponent");
-		TransformComponent *t = (TransformComponent *)i->getSubComponent("transformcomponent");
-
-		if (t)
-			a->getAABB()->updatePosition(t->getPosition());
-
-		if (a->getCollidingWith() && !a->getAABB()->isCollided(*a->getCollidingWith()->getAABB()))
-			a->setCollidingWith(nullptr);
-
-		if (a)
-		{
-			for (auto j : gameobjects)
-			{
-				ColliderComponent *b = (ColliderComponent *)j->getSubComponent("collidercomponent");
-
-				if (i != j && b && a->getAABB()->isCollided(*b->getAABB()))
-					a->setCollidingWith(b);
-			}
-		}		
+		return vector / (length / max);
 	}
+
+	return vector;
+}
+
+void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
+{
+	elapsed += delta;
+	while (elapsed >= 0.01f)
+	{
+		for (auto i : gameobjects)
+		{
+			ColliderComponent *a = (ColliderComponent *)i->getSubComponent("collidercomponent");
+			
+			process(i);
+
+			//Update what it is colliding with now
+			if (a)
+			{
+				for (auto j : gameobjects)
+				{
+					ColliderComponent *b = (ColliderComponent *)j->getSubComponent("collidercomponent");
+
+					if (i != j && b && a->getAABB()->isCollided(*b->getAABB()))
+					{
+						a->setCollidingWith(b);
+						std::cout << a->getHandle() << " hit " << b->getHandle() << std::endl;
+					}
+				}
+			}
+		}
+		elapsed -= 0.01f;
+	}
+	
 }
 
 void PhysicsSystem::process(Component *component)
 {
+	ColliderComponent *a = (ColliderComponent *)component->getSubComponent("collidercomponent");
+	TransformComponent *t = (TransformComponent *)component->getSubComponent("transformcomponent");
+	SteeringComponent *s = (SteeringComponent*)component->getSubComponent("steeringcomponent");
+	LocomotionComponent *l = (LocomotionComponent*)component->getSubComponent("locomotioncomponent");
 
+	//Update gameobjects ColliderComponent
+	if (t)
+		a->getAABB()->updatePosition(t->getPosition());
+
+	//Check if still colliding with previous collidee
+	if (a->getCollidingWith() && !a->getAABB()->isCollided(*a->getCollidingWith()->getAABB()))
+		a->setCollidingWith(nullptr);
+
+	//Update position based on steering forces and locomotion
+	if (s && t && l)
+	{
+		l->setVelocity(truncate(l->getVelocity() + s->getSteering(), l->getMaxVel()));
+		t->setPosition(t->getPosition() + (l->getVelocity()*(0.01f)));
+	}
 }

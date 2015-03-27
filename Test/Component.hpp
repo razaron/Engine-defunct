@@ -15,8 +15,8 @@ public:
 
 	unsigned getHandle();
 	std::string getType();
-	std::vector<Component*> getComponentList();
 	void setType(std::string type){ this->type = type; };
+	std::vector<Component*> getComponentList();
 
 	int getComponentCount(Component *c);
 

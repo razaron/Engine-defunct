@@ -43,6 +43,18 @@
     <Filter Include="Physics\Header">
       <UniqueIdentifier>{cb816765-8590-4740-8877-acbeda8c0b13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{63e95d22-80c2-4331-9893-75b7d84bf101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Header">
+      <UniqueIdentifier>{a80f0ff3-0b56-4a2d-a74b-a259a2e5aaff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Source">
+      <UniqueIdentifier>{44e87373-b359-4c5c-acb8-7e27081d51c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay">
+      <UniqueIdentifier>{06b09ed3-3402-45c7-85aa-06ae7592f464}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -88,6 +100,15 @@
       <Filter>Physics\Source</Filter>
     </ClCompile>
     <ClCompile Include="AABB.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AISystem.cpp">
+      <Filter>AI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SteeringComponent.cpp">
+      <Filter>AI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LocomotionComponent.cpp">
       <Filter>Physics\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,6 +182,15 @@
       <Filter>Physics\Header</Filter>
     </ClInclude>
     <ClInclude Include="AABB.hpp">
+      <Filter>Physics\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringComponent.hpp">
+      <Filter>AI\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AISystem.hpp">
+      <Filter>AI\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LocomotionComponent.hpp">
       <Filter>Physics\Header</Filter>
     </ClInclude>
   </ItemGroup>

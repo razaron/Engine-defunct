@@ -31,7 +31,7 @@ unsigned SceneNode::draw()
 	return 0;
 }
 
-unsigned SceneNode::update(float delta)
+unsigned SceneNode::update(double delta)
 {
 	if (parent)
 		worldTransform = parent->worldTransform * transform;

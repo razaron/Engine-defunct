@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 
+#include <iostream>
 #include <string>
 
 class System
@@ -9,7 +10,7 @@ class System
 public:
 	System();
 	~System();
-	virtual void update(std::vector<Component*> gameobjects);
+	virtual void update(std::vector<Component*> gameobjects, double delta);
 
 	void addType(std::string type){ myTypes.push_back(type); };
 

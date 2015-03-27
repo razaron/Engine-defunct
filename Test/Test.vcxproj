@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -94,6 +95,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="LocomotionComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
@@ -102,6 +104,7 @@
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Space.cpp" />
+    <ClCompile Include="SteeringComponent.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
@@ -118,10 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.hpp" />
+    <ClInclude Include="AISystem.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="ColliderComponent.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Frustum.hpp" />
+    <ClInclude Include="LocomotionComponent.hpp" />
     <ClInclude Include="MeshComponent.hpp" />
     <ClInclude Include="PhysicsSystem.hpp" />
     <ClInclude Include="Plane.hpp" />
@@ -129,6 +134,7 @@
     <ClInclude Include="RenderSystem.hpp" />
     <ClInclude Include="SceneNode.hpp" />
     <ClInclude Include="Space.hpp" />
+    <ClInclude Include="SteeringComponent.hpp" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="TransformComponent.hpp" />
   </ItemGroup>

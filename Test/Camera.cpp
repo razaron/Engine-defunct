@@ -2,7 +2,7 @@
 
 
 Camera::Camera(glm::vec3 position, glm::vec3 target)
-	:position(position), target(target), zoom(45.0f)
+	:position(position), target(target), zoom(75.0f)
 {
 }
 
