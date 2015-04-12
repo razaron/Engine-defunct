@@ -17,6 +17,6 @@ public:
 	//void processSubComponents(Component *c, SceneNode *n);
 
 private:
-	float elapsed;
+	double elapsed;
 };
 

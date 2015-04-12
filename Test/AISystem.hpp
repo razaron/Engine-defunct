@@ -3,6 +3,7 @@
 #include "TransformComponent.hpp"
 #include "SteeringComponent.hpp"
 #include "LocomotionComponent.hpp"
+#include "ColliderComponent.hpp"
 
 class AISystem :
 	public System

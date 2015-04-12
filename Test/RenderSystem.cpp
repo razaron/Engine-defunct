@@ -397,3 +397,21 @@ void RenderSystem::checkShaderCompile(GLuint shader)
 		std::cout << buffer << "\n";
 	}
 }
+
+Ray RenderSystem::mouseRay(double x, double y)
+{
+	glm::vec3 pos(x, height -(y), 0.0f);
+
+	glm::mat4 view = getCamera()->getView();
+
+	//Projection matrix
+	glm::mat4 proj = glm::perspective(glm::radians(getCamera()->getZoom()), (float)width / height, 1.0f, 100.0f);
+
+	glm::vec3 near = glm::unProject(pos, view, proj, glm::vec4(0.f, 0.f, width, height));
+
+	pos.z = 1.0f;
+
+	glm::vec3 far = glm::unProject(pos, view, proj, glm::vec4(0.f, 0.f, width, height));
+
+	return Ray(near, far);
+}

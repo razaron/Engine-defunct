@@ -1,8 +1,7 @@
 #include "SteeringComponent.hpp"
 
 
-SteeringComponent::SteeringComponent(Mode behaviour)
-	:behaviour(behaviour), target(nullptr)
+SteeringComponent::SteeringComponent()
 {
 	setType("steeringcomponent");
 }

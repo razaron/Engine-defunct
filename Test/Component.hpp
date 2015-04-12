@@ -10,7 +10,9 @@ class Component
 {
 public:
 	Component();
+	Component(bool isData);
 	Component(std::string type);
+	Component(std::string type, bool isData);
 	~Component();
 
 	unsigned getHandle();
@@ -30,6 +32,7 @@ public:
 private:
 	unsigned handle;
 	std::string type, name;
+	bool isData;
 	
 	std::vector<unsigned> parentHandles;
 	std::vector <Component*> subComponents;

@@ -2,14 +2,29 @@
 
 
 Component::Component()
+	:isData(false)
 {
 	handle = getNextId();
 }
 
+Component::Component(bool isData)
+	:isData(isData)
+{
+	if (!isData)
+		handle = getNextId();
+}
+
 Component::Component(std::string type)
-	:type(type)
+	:type(type), isData(false)
 {
 	handle = getNextId();
+}
+
+Component::Component(std::string type, bool isData)
+	: type(type), isData(isData)
+{
+	if (!isData)
+		handle = getNextId();
 }
 
 Component::~Component()
@@ -18,6 +33,8 @@ Component::~Component()
 
 unsigned Component::getHandle()
 {
+	if (isData)
+		return 0;
 	return handle;
 }
 

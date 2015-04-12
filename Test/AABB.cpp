@@ -30,3 +30,48 @@ bool AABB::isCollided(const AABB& b)
 
 	return false;
 }
+
+glm::vec3 AABB::minSeparation(const AABB& aabb)
+{
+	float dx = 0, dy = 0, dz = 0;
+
+	glm::vec3 a = aabb.min - max;
+	glm::vec3 b = aabb.max - min;
+
+	a=glm::abs(a);
+	b=glm::abs(b);
+
+	if (a.x < b.x)
+		dx = a.x;
+	else
+		dx = b.x;
+
+	if (a.y < b.y)
+		dy = a.y;
+	else
+		dy = b.y;
+
+	if (a.z < b.z)
+		dz = a.z;
+	else
+		dz = b.z;
+
+	if (dx < dy && dx < dz)
+	{
+		dy = 0.0f;
+		dz = 0.0f;
+	}
+	if (dy < dx && dy < dz)
+	{
+		dx = 0.0f;
+		dz = 0.0f;
+	}
+
+	if (dz < dy && dz < dx)
+	{
+		dx = 0.0f;
+		dy = 0.0f;
+	}
+
+	return glm::vec3(dx, dy, dz);
+}

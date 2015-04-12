@@ -6,25 +6,32 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-enum class Mode{SEEK};
+typedef struct behaviour Behaviour;
+
+enum class Mode{SEEK, FLEE, ARRIVE, AVOID};
+
+struct behaviour
+{
+	Mode mode;
+	std::vector<Component*> targets;
+	float weight = 1.0f;
+};
 
 class SteeringComponent :
 	public Component
 {
 public:
-	SteeringComponent(Mode behaviour);
+	SteeringComponent();
 	~SteeringComponent();
 
-	void setTarget(Component *target){ this->target = target; };
-	Component* getTarget(){ return target; };
-	void setBehaviour(Mode behaviour){ this->behaviour = behaviour; };
-	Mode getBehaviour(){ return behaviour; };
+	std::vector<Behaviour*> getBehaviours(){ return behaviours; };
+	void addBehaviour(Behaviour *behaviour){ behaviours.push_back(behaviour); };
+	Behaviour* getBehaviour(Mode behaviour){ for (auto i : behaviours) { if (i->mode == behaviour)return i; }return nullptr; };
 	void setSteering(glm::vec3 steering){ this->steering = steering; };
 	glm::vec3 getSteering(){ return steering; };
 
 private:
-	Mode behaviour;
-	Component *target;
+	std::vector<Behaviour*> behaviours;
 	glm::vec3 steering;
 };
 

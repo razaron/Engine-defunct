@@ -55,6 +55,12 @@
     <Filter Include="Gameplay">
       <UniqueIdentifier>{06b09ed3-3402-45c7-85aa-06ae7592f464}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Gameplay\Source">
+      <UniqueIdentifier>{431843d5-9249-459d-a93e-e5efdf17ad61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay\Header">
+      <UniqueIdentifier>{102f3d77-f4d9-4267-8555-b297eaa532d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -109,6 +115,15 @@
       <Filter>AI\Source</Filter>
     </ClCompile>
     <ClCompile Include="LocomotionComponent.cpp">
+      <Filter>Physics\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
       <Filter>Physics\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,6 +206,15 @@
       <Filter>AI\Header</Filter>
     </ClInclude>
     <ClInclude Include="LocomotionComponent.hpp">
+      <Filter>Physics\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.hpp">
       <Filter>Physics\Header</Filter>
     </ClInclude>
   </ItemGroup>

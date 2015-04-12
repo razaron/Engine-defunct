@@ -7,6 +7,7 @@
 #include "TransformComponent.hpp"
 #include "ColliderComponent.hpp"
 #include "Frustum.hpp"
+#include "Ray.hpp"
 
 #include <GL/glew.h>  
 #include <GLFW/glfw3.h>
@@ -61,6 +62,7 @@ public:
 	void buildNodeLists(SceneNode* from);
 	void sortNodeLists();
 
+	Ray mouseRay(double x, double y);
 
 private:
 	void drawNode(SceneNode *n);

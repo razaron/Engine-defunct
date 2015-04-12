@@ -14,6 +14,7 @@ public:
 
 	void updatePosition(glm::vec3 position);
 	bool isCollided(const AABB& aabb);
+	glm::vec3 minSeparation(const AABB& aabb);
 
 private:
 	glm::vec3 min, max, dimensions;

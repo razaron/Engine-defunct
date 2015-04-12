@@ -31,7 +31,10 @@ void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
 		for (auto i : gameobjects)
 		{
 			ColliderComponent *a = (ColliderComponent *)i->getSubComponent("collidercomponent");
-			
+			TransformComponent *t = (TransformComponent *)i->getSubComponent("transformcomponent");
+
+
+			AABB prev = *a->getAABB();
 			process(i);
 
 			//Update what it is colliding with now
@@ -46,6 +49,12 @@ void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
 						a->setCollidingWith(b);
 						std::cout << a->getHandle() << " hit " << b->getHandle() << std::endl;
 					}
+				}
+
+				if (a->getCollidingWith() && !a->getCollidingWith()->getIsTrigger())
+				{
+					t->setPosition(t->getPosition() - a->getAABB()->minSeparation(*a->getCollidingWith()->getAABB()));
+					a->getAABB()->updatePosition(t->getPosition());
 				}
 			}
 		}
@@ -74,5 +83,6 @@ void PhysicsSystem::process(Component *component)
 	{
 		l->setVelocity(truncate(l->getVelocity() + s->getSteering(), l->getMaxVel()));
 		t->setPosition(t->getPosition() + (l->getVelocity()*(0.01f)));
+		a->getAABB()->updatePosition(t->getPosition());
 	}
 }

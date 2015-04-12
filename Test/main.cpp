@@ -103,11 +103,49 @@ int main()
 
 	floor.addComponent(&floor2);
 	floor2.addComponent(&floor3);
+	
+	//make bullet
+	RenderComponent bullet(glm::vec3(-10.0f, -11.0f, 3.0f), glm::vec3(0.5, 0.5f, 0.5f), &mCube);
+	bullet.setOvColour(glm::vec3(0.0f, 1.0f, 0.0f));
+	ColliderComponent cbullet(glm::vec3(0.0f, 5.0f, 2.7f), 0.25f);
+	cbullet.setIsTrigger(true);
+	bullet.addComponent((Component*)&cbullet);
 
+	//make obstacles
+	RenderComponent obstacle(glm::vec3(-5.0f, -5.0f, 3.0f), glm::vec3(2.0f, 2.0f, 2.0f), &mCube);
+	ColliderComponent cobstacle(glm::vec3(0.0f, -5.0f, 3.0f), 1.0f);
+	obstacle.addComponent(&cobstacle);
+
+	RenderComponent obstacle2(glm::vec3(-5.0f, 5.0f, 3.0f), glm::vec3(2.0f, 2.0f, 2.0f), &mCube);
+	ColliderComponent cobstacle2(glm::vec3(0.0f, -5.0f, 3.0f), 1.0f);
+	obstacle2.addComponent(&cobstacle2);
+
+	RenderComponent obstacle3(glm::vec3(5.0f, 5.0f, 3.0f), glm::vec3(2.0f, 2.0f, 2.0f), &mCube);
+	ColliderComponent cobstacle3(glm::vec3(0.0f, -5.0f, 3.0f), 1.0f);
+	obstacle3.addComponent(&cobstacle3);
+
+	RenderComponent obstacle4(glm::vec3(5.0f, -5.0f, 3.0f), glm::vec3(2.0f, 2.0f, 2.0f), &mCube);
+	ColliderComponent cobstacle4(glm::vec3(0.0f, -5.0f, 3.0f), 1.0f);
+	obstacle4.addComponent(&cobstacle4);
+	
 	//make humanoid
-	RenderComponent body(glm::vec3(0.0f, 0.0f, 2.8f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
-	ColliderComponent cbody(glm::vec3(0.0f, 0.0f, 2.7f), 1.0f);
-	SteeringComponent sbody(Mode::SEEK);
+	RenderComponent body(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
+	ColliderComponent cbody(glm::vec3(0.0f, 0.0f, 3.0f), 1.0f);
+	cbody.setIsTrigger(true);
+
+	SteeringComponent sbody;
+	Behaviour b1, b2;
+	b1.mode = Mode::ARRIVE;
+	b1.targets.push_back(&bullet);
+	b2.mode = Mode::AVOID;
+	b2.weight = 1.f;
+	b2.targets.push_back(&obstacle);
+	b2.targets.push_back(&obstacle2);
+	b2.targets.push_back(&obstacle3);
+	b2.targets.push_back(&obstacle4);
+	sbody.addBehaviour(&b1);
+	sbody.addBehaviour(&b2);
+
 	LocomotionComponent lbody(10.0f, 1.0f, 10.0f);
 	body.addComponent((Component*)&cbody);
 	body.addComponent((Component*)&sbody);
@@ -124,23 +162,23 @@ int main()
 	body.addComponent((Component*)&rleg);
 	body.addComponent((Component*)&head);
 
-	//make bullet
-	RenderComponent bullet(glm::vec3(0.0f, 5.0f, 3.0f), glm::vec3(0.5, 0.5f, 0.5f), &mCube);
-	bullet.setOvColour(glm::vec3(0.0f, 1.0f, 0.0f));
-	ColliderComponent cbullet(glm::vec3(0.0f, 5.0f, 2.7f), 0.25f);
-	bullet.addComponent((Component*)&cbullet);
-
 	//add body and bullet to the floor and put objects into their respective spaces
 	floor.addComponent(&body);
 	floor.addComponent(&bullet);
+	floor.addComponent(&obstacle);
+	floor.addComponent(&obstacle2);
+	floor.addComponent(&obstacle3);
+	floor.addComponent(&obstacle4);
 	sr.addObject(&floor);
+	sp.addObject(&obstacle);
+	sp.addObject(&obstacle2);
+	sp.addObject(&obstacle3);
+	sp.addObject(&obstacle4);
 	sp.addObject((Component*)&body);
 	sp.addObject((Component*)&bullet);
 	sa.addObject((Component*)&body);
 
 	((TransformComponent*)body.getSubComponent("transformcomponent"))->setDeepScale(glm::vec3(1.0f));
-	((SteeringComponent*)body.getSubComponent("steeringcomponent"))->setTarget(bullet.getSubComponent("transformcomponent"));
-
 
 	//CAMERA AND STUFF
 	r.getCamera()->setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -148,7 +186,7 @@ int main()
 	r.setClearColour(glm::vec3(1.0f, 1.0f, 1.0f));
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	body.setAlpha(0.5f);
 	double time = glfwGetTime(), delta = 0;
 	double lastTime = time;
 	int nbFrames = 0;
@@ -156,6 +194,22 @@ int main()
 	{
 		if (glfwGetKey(r.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(r.getWindow(), 1);
+
+		if (glfwGetMouseButton(r.getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		{
+			double x, y;
+			glfwGetCursorPos(r.getWindow(), &x, &y);
+			
+			//project mouse to ray in world coords
+			Ray ray = r.mouseRay(x, y);
+
+			//calculate ray x,y coords at z=3.f
+			float ratio = (ray.getPos().z - 3.f) / (ray.getPos().z - (ray.getPos().z+(ray.getDir().z*ray.getLength())));
+			glm::vec3 final = ray.getPos() + ray.getDir()*ray.getLength()*ratio;
+
+			((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3(final.x, final.y, final.z));
+		}
+
 
 		nbFrames++;
 		if (time - lastTime >= 1.0){ // If last prinf() was more than 1 sec ago
@@ -175,9 +229,8 @@ int main()
 
 		if (cbody.getCollidingWith() == &cbullet)
 		{
-			((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3((std::rand() % 16), (std::rand() % 16), 3.0f));
+			//((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3((std::rand() % 32) - 16.0f, (std::rand() % 32) - 16.0f, 3.0f));
 			((ColliderComponent*)bullet.getSubComponent("collidercomponent"))->getAABB()->updatePosition(((TransformComponent*)bullet.getSubComponent("transformcomponent"))->getPosition());
-			body.setAlpha(0.5f);
 		}
 
 		glfwSwapBuffers(r.getWindow());

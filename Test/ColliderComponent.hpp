@@ -18,6 +18,9 @@ public:
 	ColliderComponent* getCollidingWith(){ return collidingWith; };
 	void setCollidingWith(ColliderComponent *collidingWith){ this->collidingWith = collidingWith; };
 
+	bool getIsTrigger(){ return isTrigger; };
+	void setIsTrigger(bool isTrigger){ this->isTrigger = isTrigger; };
+
 private:
 	AABB aabb;
 	float boundingRadius;
