@@ -3,7 +3,7 @@
 
 SteeringComponent::SteeringComponent()
 {
-	setType("steeringcomponent");
+	setType(ComponentType::STEERING);
 }
 
 

@@ -14,13 +14,13 @@ Component::Component(bool isData)
 		handle = getNextId();
 }
 
-Component::Component(std::string type)
+Component::Component(ComponentType type)
 	:type(type), isData(false)
 {
 	handle = getNextId();
 }
 
-Component::Component(std::string type, bool isData)
+Component::Component(ComponentType type, bool isData)
 	: type(type), isData(isData)
 {
 	if (!isData)
@@ -29,18 +29,6 @@ Component::Component(std::string type, bool isData)
 
 Component::~Component()
 {
-}
-
-unsigned Component::getHandle()
-{
-	if (isData)
-		return 0;
-	return handle;
-}
-
-std::string Component::getType()
-{
-	return type;
 }
 
 Component* Component::getSubComponent(unsigned int handle)
@@ -57,7 +45,7 @@ Component* Component::getSubComponent(unsigned int handle)
 //std::vector<Component*> Component::getSubComponents(std::string type)
 
 
-Component* Component::getSubComponent(std::string type)
+Component* Component::getSubComponent(ComponentType type)
 {
 	for (auto i : subComponents)
 	{

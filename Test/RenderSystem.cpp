@@ -4,10 +4,8 @@
 RenderSystem::RenderSystem(int width, int height)
 	:width(width), height(height), clearColour(glm::vec3(0.0f)), root(new SceneNode())
 {
-	addType("rendercomponent");
-	addType("meshcomponent");
-	addType("transformcomponent");
-	addType("collidercomponent");
+	addType(ComponentType::RENDER);
+	addType(ComponentType::MESH);
 
 	openWindow();
 	shaderMain = new ShaderProgram();
@@ -132,7 +130,7 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 	{
 		SceneNode *temp = n;
 	
-		if (j->getType() == "rendercomponent")
+		if (j->getType() == ComponentType::RENDER)
 		{
 			RenderComponent *r = (RenderComponent*)j;
 			temp = new SceneNode();
@@ -142,20 +140,20 @@ void RenderSystem::processSubComponents(Component *c, SceneNode *n)
 			n->addChild(temp);
 		}
 
-		if (j->getType() == "transformcomponent")
+		if (j->getType() == ComponentType::TRANSFORM)
 		{
 			TransformComponent *t = (TransformComponent*)j;
 			temp->setTransform(t->getTransform());
 			temp->setScale(t->getScale());
 		}
 
-		if (j->getType() == "meshcomponent")
+		if (j->getType() == ComponentType::MESH)
 		{
 			temp->setMesh((MeshComponent*)j);
 			addVAO((MeshComponent*)j, shaderMain);
 		}
 
-		if (j->getType() == "collidercomponent")
+		if (j->getType() == ComponentType::COLLIDER)
 		{
 			ColliderComponent *c = (ColliderComponent*)j;
 			temp->setBoundingRadius(c->getBoundingRadius());
@@ -169,7 +167,7 @@ void RenderSystem::process(Component *gameobject)
 {
 	SceneNode *temp = root;
 
-	if (gameobject->getType() == "rendercomponent")
+	if (gameobject->getType() == ComponentType::RENDER)
 	{
 		RenderComponent *r = (RenderComponent*)gameobject;
 		temp = new SceneNode();

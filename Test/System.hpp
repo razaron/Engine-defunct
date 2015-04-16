@@ -12,11 +12,11 @@ public:
 	~System();
 	virtual void update(std::vector<Component*> gameobjects, double delta);
 
-	void addType(std::string type){ myTypes.push_back(type); };
+	void addType(ComponentType type){ myTypes.push_back(type); };
 
 protected:
 	virtual void process(Component *component);
-	std::vector<std::string> myTypes;
+	std::vector<ComponentType> myTypes;
 
 private:
 };

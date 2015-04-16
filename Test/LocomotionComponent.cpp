@@ -4,7 +4,7 @@
 LocomotionComponent::LocomotionComponent(float maxVelocity, float maxForce, float mass)
 	:maxVel(maxVelocity), maxForce(maxForce), mass(mass)
 {
-	setType("locomotioncomponent");
+	setType(ComponentType::LOCOMOTION);
 }
 
 

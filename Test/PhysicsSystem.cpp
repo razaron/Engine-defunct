@@ -4,6 +4,9 @@
 PhysicsSystem::PhysicsSystem()
 	:elapsed(0.0f)
 {
+	addType(ComponentType::COLLIDER);
+	addType(ComponentType::LOCOMOTION);
+	addType(ComponentType::TRANSFORM);
 }
 
 
@@ -30,8 +33,8 @@ void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
 	{
 		for (auto i : gameobjects)
 		{
-			ColliderComponent *a = (ColliderComponent *)i->getSubComponent("collidercomponent");
-			TransformComponent *t = (TransformComponent *)i->getSubComponent("transformcomponent");
+			ColliderComponent *a = (ColliderComponent *)i->getSubComponent(ComponentType::COLLIDER);
+			TransformComponent *t = (TransformComponent *)i->getSubComponent(ComponentType::TRANSFORM);
 
 
 			AABB prev = *a->getAABB();
@@ -42,12 +45,11 @@ void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
 			{
 				for (auto j : gameobjects)
 				{
-					ColliderComponent *b = (ColliderComponent *)j->getSubComponent("collidercomponent");
+					ColliderComponent *b = (ColliderComponent *)j->getSubComponent(ComponentType::COLLIDER);
 
 					if (i != j && b && a->getAABB()->isCollided(*b->getAABB()))
 					{
 						a->setCollidingWith(b);
-						std::cout << a->getHandle() << " hit " << b->getHandle() << std::endl;
 					}
 				}
 
@@ -65,10 +67,10 @@ void PhysicsSystem::update(std::vector<Component*> gameobjects, double delta)
 
 void PhysicsSystem::process(Component *component)
 {
-	ColliderComponent *a = (ColliderComponent *)component->getSubComponent("collidercomponent");
-	TransformComponent *t = (TransformComponent *)component->getSubComponent("transformcomponent");
-	SteeringComponent *s = (SteeringComponent*)component->getSubComponent("steeringcomponent");
-	LocomotionComponent *l = (LocomotionComponent*)component->getSubComponent("locomotioncomponent");
+	ColliderComponent *a = (ColliderComponent *)component->getSubComponent(ComponentType::COLLIDER);
+	TransformComponent *t = (TransformComponent *)component->getSubComponent(ComponentType::TRANSFORM);
+	SteeringComponent *s = (SteeringComponent*)component->getSubComponent(ComponentType::STEERING);
+	LocomotionComponent *l = (LocomotionComponent*)component->getSubComponent(ComponentType::LOCOMOTION);
 
 	//Update gameobjects ColliderComponent
 	if (t)

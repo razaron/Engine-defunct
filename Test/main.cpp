@@ -3,6 +3,7 @@
 #include "PhysicsSystem.hpp"
 #include "AISystem.hpp"
 
+#include <boost\scoped_ptr.hpp>
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
@@ -75,6 +76,35 @@ void makeGround(int x, int y)
 	}
 }
 
+RenderComponent* makeAgent(glm::vec3 pos, MeshComponent *m, std::vector<Behaviour*> b)
+{
+	RenderComponent *body = new RenderComponent(pos, glm::vec3(2.0, 2.0f, 2.0f), m);
+	ColliderComponent *cbody = new ColliderComponent(glm::vec3(0.0f, 0.0f, 3.0f), 1.0f);
+	cbody->setIsTrigger(true);
+
+	SteeringComponent *sbody = new SteeringComponent();
+	
+	for (auto i : b)
+		sbody->addBehaviour(i);
+
+	LocomotionComponent *lbody = new LocomotionComponent(10.0f, 1.0f, 10.0f);
+	body->addComponent(cbody);
+	body->addComponent(sbody);
+	body->addComponent(lbody);
+
+	RenderComponent *larm = new RenderComponent(glm::vec3(0.8f, 0.0f, -1.9f), glm::vec3(0.3f, 0.3f, -1.8f), m);
+	RenderComponent *rarm = new RenderComponent(glm::vec3(-0.8f, 0.0f, -1.9f), glm::vec3(0.3f, 0.3f, -1.8f), m);
+	RenderComponent *lleg = new RenderComponent(glm::vec3(1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), m);
+	RenderComponent *rleg = new RenderComponent(glm::vec3(-1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), m);
+	RenderComponent *head = new RenderComponent(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.5f, 0.5f, 0.5f), m);
+	body->addComponent(larm);
+	body->addComponent(rarm);
+	body->addComponent(lleg);
+	body->addComponent(rleg);
+	body->addComponent(head);
+
+	return body;
+}
 
 int main()
 {
@@ -109,7 +139,7 @@ int main()
 	bullet.setOvColour(glm::vec3(0.0f, 1.0f, 0.0f));
 	ColliderComponent cbullet(glm::vec3(0.0f, 5.0f, 2.7f), 0.25f);
 	cbullet.setIsTrigger(true);
-	bullet.addComponent((Component*)&cbullet);
+	bullet.addComponent(&cbullet);
 
 	//make obstacles
 	RenderComponent obstacle(glm::vec3(-5.0f, -5.0f, 3.0f), glm::vec3(2.0f, 2.0f, 2.0f), &mCube);
@@ -129,41 +159,39 @@ int main()
 	obstacle4.addComponent(&cobstacle4);
 	
 	//make humanoid
-	RenderComponent body(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(2.0, 2.0f, 2.0f), &mCube);
-	ColliderComponent cbody(glm::vec3(0.0f, 0.0f, 3.0f), 1.0f);
-	cbody.setIsTrigger(true);
+	Behaviour *b1 = new Behaviour(), *b2 = new Behaviour();
+	b1->mode = Mode::ARRIVE;
+	b1->targets.push_back(&bullet);
+	b2->mode = Mode::AVOID;
+	b2->weight = 1.f;
+	b2->targets.push_back(&obstacle);
+	b2->targets.push_back(&obstacle2);
+	b2->targets.push_back(&obstacle3);
+	b2->targets.push_back(&obstacle4);
 
-	SteeringComponent sbody;
-	Behaviour b1, b2;
-	b1.mode = Mode::ARRIVE;
-	b1.targets.push_back(&bullet);
-	b2.mode = Mode::AVOID;
-	b2.weight = 1.f;
-	b2.targets.push_back(&obstacle);
-	b2.targets.push_back(&obstacle2);
-	b2.targets.push_back(&obstacle3);
-	b2.targets.push_back(&obstacle4);
-	sbody.addBehaviour(&b1);
-	sbody.addBehaviour(&b2);
+	std::vector<Behaviour*> b;
+	b.push_back(b1);
+	b.push_back(b2);
 
-	LocomotionComponent lbody(10.0f, 1.0f, 10.0f);
-	body.addComponent((Component*)&cbody);
-	body.addComponent((Component*)&sbody);
-	body.addComponent((Component*)&lbody);
-
-	RenderComponent larm(glm::vec3(0.8f, 0.0f, -1.9f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent rarm(glm::vec3(-0.8f, 0.0f, -1.9f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent lleg(glm::vec3(1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent rleg(glm::vec3(-1.2f, 0.0f, 0.0f), glm::vec3(0.3f, 0.3f, -1.8f), &mCube);
-	RenderComponent head(glm::vec3(0.0f, 0.0f, 1.5f), glm::vec3(0.5f, 0.5f, 0.5f), &mCube);
-	body.addComponent((Component*)&larm);
-	body.addComponent((Component*)&rarm);
-	body.addComponent((Component*)&lleg);
-	body.addComponent((Component*)&rleg);
-	body.addComponent((Component*)&head);
+	std::vector<RenderComponent *> body; 
+	for (int i = -4; i <= 4; ++i)
+	{
+		for (int j = -1; j <= 1; ++j)
+		{
+			RenderComponent *temp = makeAgent(glm::vec3(i, j, 3.0f), &mCube, b);
+			body.push_back(temp);
+			floor.addComponent(temp);
+			sp.addObject(temp);
+			sa.addObject(temp);
+		}
+	}
+	//sa.addObject(body[0]);
+	//sp.addObject(body[0]);
+	
+	
 
 	//add body and bullet to the floor and put objects into their respective spaces
-	floor.addComponent(&body);
+	
 	floor.addComponent(&bullet);
 	floor.addComponent(&obstacle);
 	floor.addComponent(&obstacle2);
@@ -174,11 +202,9 @@ int main()
 	sp.addObject(&obstacle2);
 	sp.addObject(&obstacle3);
 	sp.addObject(&obstacle4);
-	sp.addObject((Component*)&body);
-	sp.addObject((Component*)&bullet);
-	sa.addObject((Component*)&body);
+	sp.addObject(&bullet);
 
-	((TransformComponent*)body.getSubComponent("transformcomponent"))->setDeepScale(glm::vec3(1.0f));
+	//((TransformComponent*)body.getSubComponent(ComponentType::TRANSFORM))->setDeepScale(glm::vec3(1.0f));
 
 	//CAMERA AND STUFF
 	r.getCamera()->setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -186,7 +212,7 @@ int main()
 	r.setClearColour(glm::vec3(1.0f, 1.0f, 1.0f));
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	body.setAlpha(0.5f);
+	body[0]->setAlpha(0.5f);
 	double time = glfwGetTime(), delta = 0;
 	double lastTime = time;
 	int nbFrames = 0;
@@ -207,7 +233,7 @@ int main()
 			float ratio = (ray.getPos().z - 3.f) / (ray.getPos().z - (ray.getPos().z+(ray.getDir().z*ray.getLength())));
 			glm::vec3 final = ray.getPos() + ray.getDir()*ray.getLength()*ratio;
 
-			((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3(final.x, final.y, final.z));
+			((TransformComponent*)bullet.getSubComponent(ComponentType::TRANSFORM))->setPosition(glm::vec3(final.x, final.y, final.z));
 		}
 
 
@@ -221,16 +247,16 @@ int main()
 
 		//r.getCamera()->setZoom(45.0f+std::abs(45.0f*std::sin(time)));
 		//r.getCamera()->setPosition(glm::vec3(32 * std::sin(time), 32 * std::cos(time), 10.0f+(2.0 * std::sin(time))));
-		//((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3( 3.0f * std::sin(time/2), 0.0f, 3.0f));
+		//((TransformComponent*)bullet.getSubComponent(ComponentType::TRANSFORM))->setPosition(glm::vec3( 3.0f * std::sin(time/2), 0.0f, 3.0f));
 
 		s.update(delta);
 		r.updateScene(delta);
 		r.renderScene();
 
-		if (cbody.getCollidingWith() == &cbullet)
+		if (((ColliderComponent*)body[0]->getSubComponent(ComponentType::COLLIDER))->getCollidingWith() == &cbullet)
 		{
-			//((TransformComponent*)bullet.getSubComponent("transformcomponent"))->setPosition(glm::vec3((std::rand() % 32) - 16.0f, (std::rand() % 32) - 16.0f, 3.0f));
-			((ColliderComponent*)bullet.getSubComponent("collidercomponent"))->getAABB()->updatePosition(((TransformComponent*)bullet.getSubComponent("transformcomponent"))->getPosition());
+			//((TransformComponent*)bullet.getSubComponent(ComponentType::TRANSFORM))->setPosition(glm::vec3((std::rand() % 32) - 16.0f, (std::rand() % 32) - 16.0f, 3.0f));
+			//((ColliderComponent*)bullet.getSubComponent(ComponentType::COLLIDER))->getAABB()->updatePosition(((TransformComponent*)bullet.getSubComponent(ComponentType::TRANSFORM))->getPosition());
 		}
 
 		glfwSwapBuffers(r.getWindow());

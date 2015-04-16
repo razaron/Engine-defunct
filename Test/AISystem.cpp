@@ -3,7 +3,7 @@
 
 AISystem::AISystem()
 {
-	addType("locomotioncomponent");
+	addType(ComponentType::LOCOMOTION);
 }
 
 
@@ -33,11 +33,11 @@ void AISystem::update(std::vector<Component*> objects, double delta)
 
 Component* isObstacle(Component *object, Component *target)
 {
-	TransformComponent *t = (TransformComponent*)object->getSubComponent("transformcomponent");
-	LocomotionComponent *l = (LocomotionComponent*)object->getSubComponent("locomotioncomponent");
+	TransformComponent *t = (TransformComponent*)object->getSubComponent(ComponentType::TRANSFORM);
+	LocomotionComponent *l = (LocomotionComponent*)object->getSubComponent(ComponentType::LOCOMOTION);
 
-	TransformComponent *tt = (TransformComponent*)target->getSubComponent("transformcomponent");
-	ColliderComponent *tc = (ColliderComponent *)target->getSubComponent("collidercomponent");
+	TransformComponent *tt = (TransformComponent*)target->getSubComponent(ComponentType::TRANSFORM);
+	ColliderComponent *tc = (ColliderComponent *)target->getSubComponent(ComponentType::COLLIDER);
 
 	float dLength = (glm::length(l->getVelocity()) / l->getMaxVel()) *5.0f;
 	glm::vec3 ahead = t->getPosition() + (glm::normalize(l->getVelocity())*dLength);
@@ -52,9 +52,9 @@ Component* isObstacle(Component *object, Component *target)
 
 void AISystem::process(Component *object)
 {
-	SteeringComponent *s = (SteeringComponent*)object->getSubComponent("steeringcomponent");
-	TransformComponent *t = (TransformComponent*)object->getSubComponent("transformcomponent");
-	LocomotionComponent *l = (LocomotionComponent*)object->getSubComponent("locomotioncomponent");
+	SteeringComponent *s = (SteeringComponent*)object->getSubComponent(ComponentType::STEERING);
+	TransformComponent *t = (TransformComponent*)object->getSubComponent(ComponentType::TRANSFORM);
+	LocomotionComponent *l = (LocomotionComponent*)object->getSubComponent(ComponentType::LOCOMOTION);
 
 	glm::vec3 steering = glm::vec3(0.0f);
 
@@ -69,8 +69,8 @@ void AISystem::process(Component *object)
 		{
 			for (auto j : i->targets)
 			{
-				tt = (TransformComponent*)j->getSubComponent("transformcomponent");
-				tc = (ColliderComponent *)j->getSubComponent("collidercomponent");
+				tt = (TransformComponent*)j->getSubComponent(ComponentType::TRANSFORM);
+				tc = (ColliderComponent *)j->getSubComponent(ComponentType::COLLIDER);
 
 				if (!tt || !tc)
 					continue;

@@ -26,7 +26,7 @@ void Frustum::fromMatrix(glm::mat4 &viewProj)
 
 bool Frustum::insideFrustum(SceneNode *n)
 {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 6; ++i)
 	{
 		if (!planes[i].sphereInPlane(glm::vec3(n->getWorldTransform()[3]), n->getBoundingRadius()))
 			return false;
